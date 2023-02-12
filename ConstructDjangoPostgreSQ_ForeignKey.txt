@@ -1,0 +1,80 @@
+# rewrite a python code: create django apps with PostgreSql database name "person" and a table name ptable with keys, name and age, print the query of all table using views.py
+
+##############
+# Start by creating a new Django project
+django-admin startproject myproject
+
+# Go into the project directory
+cd myproject
+
+# Create a new app within the project
+python manage.py startapp myapp
+
+# Update the settings.py file with the database information
+# In the DATABASES section, add the following:
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'person',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
+
+# In the INSTALLED_APPS section, add the following:
+INSTALLED_APPS = [
+    ...
+    'myapp',
+]
+
+# Create the model for the ptable in the models.py file of the myapp
+from django.db import models
+
+class Ptable(models.Model):
+    name = models.CharField(max_length=255)
+    age = models.IntegerField()
+
+    def __str__(self):
+        return self.name
+
+# Run the following commands to create the database tables
+python manage.py makemigrations
+python manage.py migrate
+
+# In your views.py file in the myapp directory, add the following code:
+from django.shortcuts import render
+from myapp.models import Ptable
+
+def all_tables(request):
+    all_tables = Ptable.objects.all()
+    query = str(all_tables.query)
+    return render(request, 'myapp/all_tables.html', {'query': query})
+
+# In your templates directory, create a file named "all_tables.html" and add the following code:
+<h1>Query of all tables</h1>
+<p>{{ query }}</p>
+
+# Finally, add a URL pattern in your urls.py file to access the all_tables view:
+from django.urls import path
+from myapp import views
+
+urlpatterns = [
+    ...
+    path('all_tables/', views.all_tables, name='all_tables'),
+]
+
+
+# Run the following commands to create the database tables
+cd C:\Users\a2907\Desktop\pyApp\DeepLearning\Django\django-models-example-master
+python manage.py makemigrations
+python manage.py migrate
+python manage.py runserver
+
+######### create superuser in django
+	1. python manage.py createsuperuser
+		Username (leave blank to use 'a2907'): admin100
+		Email address: a290772@gmail.com
+		Password:
+	2. http://127.0.0.1:8000/admin/

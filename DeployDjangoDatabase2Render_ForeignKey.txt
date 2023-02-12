@@ -1,0 +1,160 @@
+################################### deploy django and database to render 
+######### configure database in render 
+0.1 https://dashboard.render.com/register
+0.2 cd C:\Users\a2907\Desktop\pyApp\Apps_Deploy\Django\django-Database_ForeignKey_Render_Good
+1. install python package to configure render database
+	install psycopg2-binary
+	pip install psycopg2-binary
+	# for django database connection to render external database URL
+	pip install dj-database-url
+	pip install django-environ
+	pip install gunicorn
+	pip list
+
+2. edit settings
+	sqlite_database_ID=1 
+	if sqlite_database_ID==1:
+		# sqlite database 
+		DATABASES = {
+			'default': {
+				'ENGINE': 'django.db.backends.sqlite3',
+				'NAME': BASE_DIR / 'db.sqlite3',
+			}
+		}
+		#
+		DEBUG = True
+		ALLOWED_HOSTS = []    
+	else:
+		# render PostgreSql database
+		import dj_database_url
+		DATABASES = {
+		'default': dj_database_url.parse(env('DATABASE_URL'))
+		}
+		# ??????????
+		# postgres:     in Internal Database URL
+		# postgresql:   in value of DATABASE_URL in Environment variable.
+		# ??????????		
+		# if not use environ, it is unsave to put database location in DATABASES
+		# 'default': dj_database_url.parse('postgres://stevegau:pCdaB...bg-a.ohio-postgres.render.com/students_0h01'
+		#
+		DEBUG = False
+		ALLOWED_HOSTS = ['*']
+		#
+		# create enviroment
+		import environ
+		env=environ.Env()
+		environ.Env.read_env()
+
+3. create .env under core folder
+	DATABASE_URL=postgres://postgres://stevegau:pCdaB...bg-a.ohio-postgres.render.com/students_0h01
+ 
+4. run manage.py runserver
+	python manage.py runserver
+		You have 20 unapplied migration(s). 
+		Your project may not work properly until you apply the migrations for app(s): 
+		admin, auth, blog, contenttypes, sessions.
+		Run 'python manage.py migrate' to apply them.
+		------> that mean connect to render postgresql database
+
+5. run manage.py migrate
+	python manage.py migrate
+		unning migrations:
+		Applying contenttypes.0001_initial... OK
+		Applying sessions.0001_initial... OK
+		------> that means migrations good
+		
+6. create a superuser for django database for render
+	1. cd C:\Users\a2907\Desktop\pyApp\DeepLearning\Django\Django_Crash_Course
+	2. python manage.py createsuperuser
+	3. Username (leave blank to use 'a2907'): admin100
+	4. Email address: a290772@gmail.com
+	5. Password: 3P$
+	6. Authenication and Authorization
+		Groups Add and Change
+		Users Add and Change
+	7. BLOG Posts Add and Change
+		
+7. login to 
+	http://127.0.0.1:8000/admin/
+
+8. create requirements.txt for githup
+	pip freeze > requirements.txt
+
+9. upload files to github
+	0. required files at folder
+		app.py
+		requirements.txt
+
+	2. Web: Creating a Git Account
+			
+	3. Web: login github
+			https://github.com/login
+			a290772@gmail.com (3P$)
+				
+	4. create a new repository
+		Under Top Repositories, Click New
+		Repository name = Render_Django_Postgresql_HTML_ForeignKey
+		Sedcription = Render_Django_Postgresql_HTML_ForeignKey
+		PublicAdd a README file
+		Create repository
+
+	5. Local PC:  push the code to that instance using the following commands at pycharm command window, local folder
+		cd C:\Users\a2907\Desktop\pyApp\Apps_Deploy\Django\django-Database_ForeignKey_Render_Good
+		git init
+		git add .
+		git commit -m "Initial Commit Render_Django_Postgresql_HTML_ForeignKey"
+		git remote add origin https://github.com/steveGau/Render_Django_Postgresql_HTML_ForeignKey.git
+		git push -u origin master
+	
+
+	6. github files location:
+		files is under main/master:
+			https://github.com/steveGau/Render_Django_Postgresql_HTML_ForeignKey/master
+
+	7. delete github Delete repository (steveGau/Render_Django_Postgresql_HTML_ForeignKey)
+		under settings, click "Delete this repository", type"steveGau/Render_Django_Postgresql_HTML_ForeignKey"
+
+10. deploy django to render
+	0. https://render.com/
+	1. set start command in render
+		gunicorn mycollege.wsgi:application
+		
+			mycollege.wsgi:application is from settings.py: WSGI_APPLICATION = 'mycollege.wsgi.application'
+	2. enviroment: in render, Advanced, enviroment
+		2.1 python version:
+			PYTHON_VERSION = 3.10.6
+		2.2 set Internal Database URL
+			DATABASE_URL = postgresql://stevegau:pCdaBZ1ehnzaSkF4sQFYgPRWQSWoVl6x@dpg-cfc9gbun6mpiero1lsbg-a/students_0h01
+	3. Set Custom Domains Name in render
+	
+# static file
+in urls.py
+
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+
+sqlite_database_ID=0 
+if sqlite_database_ID==1:
+    urlpatterns += staticfiles_urlpatterns()
+	
+	
+
+'default': dj_database_url.parse(env('DATABASE_URL'))
+Feb 9 10:20:01 PM  NameError: name 'env' is not defined
+
+os.environ.get()
+
+    import dj_database_url
+    DATABASES = {
+    'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
+    }
+	
+	
+export DATABASE_URL=postgres://stevegau:pCdaBZ1ehnzaSkF4sQFYgPRWQSWoVl6x@dpg-cfc9gbun6mpiero1lsbg-a.ohio-postgres.render.com/students_0h01
+
+setx DATABASE_URL  'postgres://stevegau:pCdaBZ1ehnzaSkF4sQFYgPRWQSWoVl6x@dpg-cfc9gbun6mpiero1lsbg-a.ohio-postgres.render.com/students_0h01'
+
+echo %DATABASE_URL%
+
+
+gunicorn Django_Crash_Course.wsgi:application
+ModuleNotFoundError: No module named 'Render_Django_Postgresql_HTML'
